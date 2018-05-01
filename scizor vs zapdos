@@ -1,0 +1,70 @@
+# -*- coding: cp936 -*-
+from random import randrange
+
+#f=open('sczior vs zapdos.txt','a')
+
+charge=[103,105,106,108,108,109,111,112,114,115,115,117,118,120,121,123]#PS计算器给出的伤害可能取值，非CT
+bp=[171,173,175,177,179,181,183,185,187,189,197,193,195,197,199,201]
+
+#问题：物耐无热风电鸟vs剑舞M螳螂
+#电鸟策略：始终放电（螳螂+6时才会输出，此时羽休吃ut即死，故不羽休）
+#螳螂策略：在血线低于某个值(tParameter)时选择羽休；否则，若物攻未+6，剑舞，若物攻+6，BP
+#几个假设：
+#1.认为放电pp足够[24发放电未打死螳螂的概率(螳螂在血量低于255时即羽休)在5%左右]
+#2.认为羽休pp足够(根据放电伤害30%~35.8%可知16个羽休pp基本足够)
+#3.认为scz已麻痹
+def sczStrategy(sczHP,sczAtk,tParameter):
+    if sczHP<tParameter:
+        if sczHP<104:#此回合必被击杀
+            return 3#子弹拳
+        else:
+            return 1#羽栖
+    else:
+        if sczAtk<6:
+            return 2#剑舞
+        else:
+            return 3
+
+        
+for tParameter in xrange(280,340):#求scz最佳回复HP值（作用：低于该HP时本回合应选择羽休）
+    sczWin=0#记录胜局数
+    for i in xrange(10000):#每个参数模拟万次
+        sczHP,zapHP,sczAtk,ifRoost=343,383,0,0#sczAtk为scz物攻等级
+        while True:
+            sczStrgy=sczStrategy(sczHP,sczAtk,tParameter)
+            if sczStrgy==3 and randrange(1,5)!=1:#scz先手行动
+                if randrange(1,25)!=1:#子弹拳伤害计算
+                    zapHP=zapHP-bp[randrange(0,16)]
+                else:#若CT
+                    zapHP=zapHP-bp[randrange(0,16)]*3/2
+                if zapHP<1:
+                    break
+                if randrange(1,25)!=1:#电鸟行动，计算放电伤害
+                    sczHP=sczHP-charge[randrange(0,16)]
+                else:
+                    sczHP=sczHP-charge[randrange(0,16)]*3/2
+                if sczHP<1:
+                    break
+            else:#scz后手
+                if randrange(1,25)!=1:#电鸟行动，计算放电伤害
+                    sczHP=sczHP-charge[randrange(0,16)]
+                else:
+                    sczHP=sczHP-charge[randrange(0,16)]*3/2
+                if sczHP<1:
+                    break
+                if randrange(1,5)!=1:#scz行动
+                    if sczStrgy==1:
+                        sczHP=min(343,sczHP+171)
+                    elif sczStrgy==2:
+                        sczAtk=sczAtk+2
+            zapHP=min(383,zapHP+23)
+
+            #if sczAtk==6 and (not ifRoost or zapHP<172 or sczHP<104):
+            #print sczHP,zapHP,sczAtk
+        #print sczHP,zapHP,sczAtk
+        if zapHP<1:
+            sczWin=sczWin+1
+    print tParameter,sczWin
+    
+    #f.write(str(sczHP)+'\t'+str(zapHP)+'\t'+str(t)+'\t'+str(sczAtk)+'\n')
+#f.close()
