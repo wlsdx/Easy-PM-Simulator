@@ -1,7 +1,6 @@
-# -*- coding: cp936 -*-
 from random import randrange
 
-# 252+Def Cosmic Clef vs 248HP 104Def 156 SpD Relaxed Cele
+# 252+Def Cosmic Clef vs 248HP 104Def 156SpD Relaxed Cele
 
 # ClefStrategy:Soft boiled when HP<tFunc(HP,Def(,pp of both sides)),Cosmic*6,calm mind*6,moonblast.
 # ClefStrategyOne:Soft boiled on otherwise-fainted turn(ignoring CT),i.e. when ClefHP<=min(Slam[ClefDef + 1][15]
