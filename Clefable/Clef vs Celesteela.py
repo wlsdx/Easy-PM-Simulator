@@ -1,4 +1,5 @@
 from random import randrange
+# python2.7
 
 # 252+Def Cosmic Clef vs 248HP 104Def 156SpD Relaxed Cele
 
@@ -23,7 +24,7 @@ MBlast = [166, 168, 170, 172, 174, 176, 178, 180, 182, 184, 186, 188, 190, 192, 
 
 
 def ClefStrategy(ClefHP, ClefDef, ClefSpA):
-    if ClefHP <= max(Slam[ClefDef + 1][15],374):  # Boiled Point Needed!?!?!?
+    if ClefHP <= Slam[ClefDef + 1][15]:  # Boiled Point Needed!?!?!?
         return 1  # Soft Boiled
     elif ClefDef < 6:
         return 2  # Cosmic Power
@@ -36,9 +37,10 @@ def ClefStrategy(ClefHP, ClefDef, ClefSpA):
 # Assumptions:Slam pp goes to 0 earlier than ClefSpA reaches +6 (proved)
 # Cele faint in three +6 MBlast.(True unless small rolls and a double protect.But useless because of the last assumption)
 
+f=open("Clef vs Celesteela.txt",'w')
 for n in xrange(16,17):  # Slam pp=n
     CeleWin = 0
-    for i in xrange(10000):
+    for i in xrange(100000):
         ClefHP, ClefDef, ClefSpA, ifBoiled = 394, 0, 0, 0  # Def,SpA:Stage(0~6)
         x = 0  # If x=3,Celesteela fainted
         for t in xrange(n):
@@ -59,10 +61,12 @@ for n in xrange(16,17):  # Slam pp=n
                 ClefHP = ClefHP - SlamCT[randrange(0, 16)]
             if ClefHP < 1:
                 break
-            ClefHP = min(394, ClefHP + 24)
+            ClefHP = min(394, ClefHP + 24) #leftover recovery
         # n-1-t=Slam pp left
         if ClefHP < 1:
             CeleWin = CeleWin + 1
+        f.write(str(CeleWin)+'\n')
     print CeleWin
+f.close()
 
 # Print(Best to use a health bar) every turn result to see if the strategy is proper
